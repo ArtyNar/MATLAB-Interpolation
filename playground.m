@@ -1,18 +1,13 @@
-for i = [6,11,21,41,81,161,321,641]
-n = i ; % = 2^(i-2)*10+1;
-
-x = linspace(0,1,n)';
-sinx = sin(pi*x);
-A = fliplr(vander(x));
-a = A\sinx;
-nplot = 10001; sqrth = 1.0/sqrt(n);
-xplot = linspace(0,1,nplot);
-sinplot= sin(pi*xplot);
-yplot = ones(1,nplot)*a(n);
-for j = 1:n-1
-yplot = yplot.*xplot + a(n-j); % note vector operations
-end
-errinf = norm((yplot-sinplot),inf);
-err2 = sqrth*norm((yplot-sinplot),2);
-fprintf(' n= %i infinity error= %8.2e 2 norm error =%8.2e \n', n,errinf,err2);
-end
+x = [0,0.125,0.25,0.375,0.5,0.625,0.75,0.875,1];
+y = [0,0.7071,1,0.7071,0,-0.7071,-1,-0.7071,0];
+k = 5; % quintic spline as you desire
+sp = spapi( optknt(x,k), x, y );
+xx = 0:.005:1; % desired sampling
+yy = fnval(xx,sp)';
+plot (x,y,'*',xx,yy)
+figure
+%,diff(yy,3),diff(yy,4)) %
+fnplt(fnder(fnder(fnder(sp))))
+plot(diff(yy,3));
+figure
+plot(diff(yy,4));

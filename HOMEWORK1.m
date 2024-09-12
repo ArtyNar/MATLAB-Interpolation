@@ -2,7 +2,11 @@
 %close all      
 warning('off') 
 
-% This is a helper function that estimates errors
+% A helper function that estimates errors
+%   algorithm_name:  the text to display in printf
+%   n:               number of points used
+%   yplot:           estimated values
+%   expplot:         true values
 function [] = display_errors(algorithm_name, n,yplot, expplot)
    % Estimating errors
    sqrth = 1.0/sqrt(n); % error factor for spatial l2 norm
@@ -12,6 +16,10 @@ function [] = display_errors(algorithm_name, n,yplot, expplot)
    fprintf('%s | n = %3i |  inf error = %8.2e | 2 norm error = %8.2e \n',algorithm_name, n,errinf,err2);
 end
 
+% A function that can be used to display a single graph
+%     yplot:   estimated values
+%     x:       set of x values at points used for estimation 
+%     y:       set of y values at points used for estimation
 function [] = do_plotting_singular(yplot, x, expx)
    % Creates eveny spaced points for error sampling
    xplot = linspace(0,2,1001);  
@@ -22,25 +30,32 @@ function [] = do_plotting_singular(yplot, x, expx)
    figure
 
    % Plots x mesh, true values of y
-   % subplot(2,1,1);
-   % plot(xplot, expplot, 'r');
+   subplot(2,1,1);
+   plot(xplot, expplot, 'r');
 
-   % % Adds legend to the plot
-   % title('True graph')
-   % xlabel(' x ');
-   % ylabel('exp(x)');
+   % Adds legend to the plot
+   title('True graph')
+   xlabel(' x ');
+   ylabel('exp(x)');
 
    % Plots x mesh, approximated values of y, and approximation points
    subplot(2,1,2);
-   plot(xplot, yplot, x, expx, 'o', xplot, expplot, 'r');
+   plot(xplot, yplot, x, expx, 'o');
    
    % Adds legend to the plot
    title('Interpolated graph')
-   legend('Interpolated graph', 'Interpolation points', 'asdasd');
+   legend('Interpolated graph', 'Interpolation points');
    xlabel(' x ');
    ylabel('exp(x) - Approximated');
 end
 
+% A function used to display 8 graphs at the same time
+% It accepts a single set of values x and yplot, but when 
+% used in a loop all the graphs will get fused in a figure
+%     i:     used for positioning of the graph in a figure
+%     n:     number of points used to interpolate
+%     yplot: estimated y-valies
+%     x:     points intialy used to do interpolation
 function [] = do_plotting_all(i, n, yplot, x)
    % Creates eveny spaced points for error sampling
    xplot = linspace(0,2,1001);  
@@ -60,7 +75,7 @@ function [] = do_plotting_all(i, n, yplot, x)
 end
 
 % A function for Polynomial Interpolation using Vandermonde matrix 
-% with n evenly spacedpoints
+% with n evenly spaced points
 function [yplot] = evenly_spaced_vander(n, x)
    % Creates eveny spaced points for error sampling
    xplot = linspace(0,2,1001);  
@@ -90,6 +105,8 @@ function [yplot] = evenly_spaced_vander(n, x)
 
 end
 
+% A function for Polynomial Interpolation using Vandermonde matrix 
+% with n Chebyshev-spaced points
 function [yplot] = chebyshev_spaced_vander(n, x)
    % Creates eveny spaced points
    xplot = linspace(0,2,1001);  
@@ -118,6 +135,8 @@ function [yplot] = chebyshev_spaced_vander(n, x)
    % do_plotting_singular(yplot, x, expx);
 end
 
+% A function for Polynomial Lagrange Interpolation using bary/baryweights routines 
+% with n evenly spaced points
 function [yplot] = evenly_spaced_bary(n, x)
    % Creates eveny spaced points
    xplot = linspace(0,2,1001);  
@@ -136,6 +155,8 @@ function [yplot] = evenly_spaced_bary(n, x)
    % do_plotting_singular(yplot, x, expx);
 end
 
+% A function for Polynomial Lagrange Interpolation using bary/baryweights routines 
+% with n Chebyshev spaced points
 function [yplot] = chebyshev_spaced_bary(n, x)
    % Creates eveny spaced points
    xplot = linspace(0,2,1001);  
@@ -154,7 +175,9 @@ function [yplot] = chebyshev_spaced_bary(n, x)
    % do_plotting_singular(yplot, x, expx);
 end
 
-% Implements k-order spline 
+% A function for spline interpolation 
+% with n evenly spaced points
+%      k-order pline
 function [yplot] = evenly_spline(n, k, x)
    % Creates eveny spaced points
    xplot = linspace(0,2,1001);  
@@ -172,9 +195,12 @@ function [yplot] = evenly_spline(n, k, x)
    % The function will calculate and display errors
    display_errors('Spline (evenly)',n, yplot, expplot);
    
-   do_plotting_singular(yplot, x, expx);
+   %do_plotting_singular(yplot, x, expx);
 end
 
+% A function for spline interpolation 
+% with n Chebyshev spaced points
+%      k-order pline
 function [yplot] = chebyshev_spline(n, k, x)
    % Creates eveny spaced points
    xplot = linspace(0,2,1001);  
@@ -187,7 +213,7 @@ function [yplot] = chebyshev_spline(n, k, x)
 
    sp = spapi(optknt(x,k), x, expx);
 
-   yplot = fnval(xplot,sp)';
+   yplot = fnval(xplot,sp);
 
    % The function will calculate and display errors
    display_errors('Spline (Chebyshev)',n, yplot, expplot);
@@ -195,6 +221,8 @@ function [yplot] = chebyshev_spline(n, k, x)
    %do_plotting_singular(yplot, x, expx);
 end
 
+% A function for interpolation using pchip 
+% with n evenly spaced points
 function [yplot] = evenly_pchip(n, x)
    % Creates eveny spaced points
    xplot = linspace(0,2,1001);  
@@ -213,6 +241,8 @@ function [yplot] = evenly_pchip(n, x)
    %do_plotting_singular(yplot, x, expx);
 end
 
+% A function for interpolation using pchip 
+% with n Chebyshev spaced points
 function [yplot] = chebyshev_pchip(n, x)
    % Creates eveny spaced points
    xplot = linspace(0,2,1001);  
@@ -231,141 +261,154 @@ function [yplot] = chebyshev_pchip(n, x)
    %do_plotting_singular(yplot, x, expx);
 end
 
-% fprintf('=========================================\n')
-% fprintf('Vandermonde matrix with %d evenly-spaced points:\n', n);
+function [] = doAllVandermonde()
+   fprintf('=================================================\n')
+   f = figure;
+   f.Name = 'Interpolation, Vandermonde, Evenly Spaced Points';
+   f.Position(1:4) = [200 200 1200 450];
+   i = 1;
+   for n = [6,11,21,41,81,161,321,641]
+      % Creates a mesh of x for the n points
+      x = linspace(0,2,n)';
 
-% f = figure;
-% f.Name = 'Interpolation, Vandermonde, Evenly Spaced Points';
-% f.Position(1:4) = [200 200 1200 450];
-% i = 1;
-% for n = [6,11,21,41,81,161,321,641]
-%    % Creates a mesh of x for the n points
-%    x = linspace(0,2,n)';
+      yplot = evenly_spaced_vander(n, x);
 
-%    yplot = evenly_spaced_vander(n, x);
+      do_plotting_all(i , n , yplot, x);
 
-%    do_plotting_all(i , n , yplot, x);
+      i = i + 1;
+   end
 
-%    i = i + 1;
-% end
+   f = figure;
+   f.Name = 'Interpolation, Vandermonde, Chebyshev Spaced Points';
+   f.Position(1:4) = [200 200 1200 450];
+   i = 1;
+   for n = [6,11,21,41,81,161,321,641]
+      % Defines the Chebyshev data points on range [0-2]
+      x = zeros(n,1);
+      for k = 1:n
+         x(k) = 1 - cos((k-1)*pi/(n-1)); % Chebyshev data points on range [0,2]
+      end
 
-% f = figure;
-% f.Name = 'Interpolation, Vandermonde, Chebyshev Spaced Points';
-% f.Position(1:4) = [200 200 1200 450];
-% i = 1;
-% for n = [6,11,21,41,81,161,321,641]
-%    % Defines the Chebyshev data points on range [0-2]
-%    x = zeros(n,1);
-%    for k = 1:n
-%       x(k) = 1 - cos((k-1)*pi/(n-1)); % Chebyshev data points on range [0,2]
-%    end
+      yplot = chebyshev_spaced_vander(n, x);
 
-%    yplot = chebyshev_spaced_vander(n, x);
+      do_plotting_all(i , n , yplot, x);
 
-%    do_plotting_all(i , n , yplot, x);
+      i = i + 1;
+   end
 
-%    i = i + 1;
-% end
+end
 
-% f = figure;
-% f.Name = 'Interpolation, Barycentric, Evenly Spaced Points';
-% f.Position(1:4) = [200 200 1200 450];
-% i = 1;
-% for n = [6,11,21,41,81,161,321,641]
-%    % Creates a mesh of x for the n points
-%    x = linspace(0,2,n)';
+function [] = doAllBarycentric()
+   fprintf('=================================================\n')   
+   f = figure;
+   f.Name = 'Interpolation, Barycentric, Evenly Spaced Points';
+   f.Position(1:4) = [200 200 1200 450];
+   i = 1;
+   for n = [6,11,21,41,81,161,321,641]
+      % Creates a mesh of x for the n points
+      x = linspace(0,2,n)';
 
-%    yplot = evenly_spaced_bary(n, x);
+      yplot = evenly_spaced_bary(n, x);
 
-%    do_plotting_all(i , n , yplot, x);
+      do_plotting_all(i , n , yplot, x);
 
-%    i = i + 1;
-% end
+      i = i + 1;
+   end
 
-% f = figure;
-% f.Name = 'Interpolation, Barycentric, Chebyshev Spaced Points';
-% f.Position(1:4) = [200 200 1200 450];
-% i = 1;
-% for n = [6,11,21,41,81,161,321,641]
-%    % Defines the Chebyshev data points on range [0-2]
-%    x = zeros(n,1);
-%    for k = 1:n
-%       x(k) = 1 - cos((k-1)*pi/(n-1)); % Chebyshev data points on range [0,2]
-%    end
+   f = figure;
+   f.Name = 'Interpolation, Barycentric, Chebyshev Spaced Points';
+   f.Position(1:4) = [200 200 1200 450];
+   i = 1;
+   for n = [6,11,21,41,81,161,321,641]
+      % Defines the Chebyshev data points on range [0-2]
+      x = zeros(n,1);
+      for k = 1:n
+         x(k) = 1 - cos((k-1)*pi/(n-1)); % Chebyshev data points on range [0,2]
+      end
 
-%    yplot = chebyshev_spaced_bary(n, x);
+      yplot = chebyshev_spaced_bary(n, x);
 
-%    do_plotting_all(i , n , yplot, x);
+      do_plotting_all(i , n , yplot, x);
 
-%    i = i + 1;
-% end
+      i = i + 1;
+   end
+end
 
-% f = figure;
-% f.Name = 'Interpolation, Spline, Evenly Spaced Points';
-% f.Position(1:4) = [200 200 1200 450];
-% i = 1;
-% for n = [6,11,21,41,81,161,321,641]
-%    % Creates a mesh of x for the n points
-%    x = linspace(0,2,n)';
+function [] = doAllSpline()
+   fprintf('=================================================\n')   
+   f = figure;
+   f.Name = 'Interpolation, Spline, Evenly Spaced Points';
+   f.Position(1:4) = [200 200 1200 450];
+   i = 1;
+   for n = [6,11,21,41,81,161,321,641]
+      % Creates a mesh of x for the n points
+      x = linspace(0,2,n)';
 
-%    yplot = evenly_spline(n, 6, x);
+      yplot = evenly_spline(n, 6, x);
 
-%    do_plotting_all(i , n , yplot, x);
+      do_plotting_all(i , n , yplot, x);
 
-%    i = i + 1;
-% end
+      i = i + 1;
+   end
 
-% f = figure;
-% f.Name = 'Interpolation, Spline, Chebyshev Spaced Points';
-% f.Position(1:4) = [200 200 1200 450];
-% i = 1;
-% for n = [6,11,21,41,81,161,321,641]
-%    % Defines the Chebyshev data points on range [0-2]
-%    x = zeros(n,1);
-%    for k = 1:n
-%       x(k) = 1 - cos((k-1)*pi/(n-1)); % Chebyshev data points on range [0,2]
-%    end
-%    yplot = chebyshev_spline(n, 6, x);
+   f = figure;
+   f.Name = 'Interpolation, Spline, Chebyshev Spaced Points';
+   f.Position(1:4) = [200 200 1200 450];
+   i = 1;
+   for n = [6,11,21,41,81,161,321,641]
+      % Defines the Chebyshev data points on range [0-2]
+      x = zeros(n,1);
+      for k = 1:n
+         x(k) = 1 - cos((k-1)*pi/(n-1)); % Chebyshev data points on range [0,2]
+      end
+      yplot = chebyshev_spline(n, 6, x);
 
-%    do_plotting_all(i , n , yplot, x);
+      do_plotting_all(i , n , yplot, x);
 
-%    i = i + 1;
-% end
+      i = i + 1;
+   end
+end
 
-% f = figure;
-% f.Name = 'Interpolation, Pchip, Evenly Spaced Points';
-% f.Position(1:4) = [200 200 1200 450];
+function [] = doAllPchip()
+   fprintf('=================================================\n') 
+   f = figure;
+   f.Name = 'Interpolation, Pchip, Evenly Spaced Points';
+   f.Position(1:4) = [200 200 1200 450];
 
-% i = 1;
-% for n = [6,11,21,41,81,161,321,641]
-%    % Creates a mesh of x for the n points
-%    x = linspace(0,2,n)';
-%    yplot = evenly_pchip(n, x);
+   i = 1;
+   for n = [6,11,21,41,81,161,321,641]
+      % Creates a mesh of x for the n points
+      x = linspace(0,2,n)';
+      yplot = evenly_pchip(n, x);
 
-%    do_plotting_all(i , n , yplot, x);
+      do_plotting_all(i , n , yplot, x);
 
-%    i = i + 1;
-% end
+      i = i + 1;
+   end
 
-% f = figure;
-% f.Name = 'Interpolation, Pchip, Chebyshev Spaced Points';
-% f.Position(1:4) = [200 200 1200 450];
+   f = figure;
+   f.Name = 'Interpolation, Pchip, Chebyshev Spaced Points';
+   f.Position(1:4) = [200 200 1200 450];
 
-% i = 1;
-% for n = [6,11,21,41,81,161,321,641]
-%    % Defines the Chebyshev data points on range [0-2]
-%    x = zeros(n,1);
-%    for k = 1:n
-%       x(k) = 1 - cos((k-1)*pi/(n-1)); % Chebyshev data points on range [0,2]
-%    end
+   i = 1;
+   for n = [6,11,21,41,81,161,321,641]
+      % Defines the Chebyshev data points on range [0-2]
+      x = zeros(n,1);
+      for k = 1:n
+         x(k) = 1 - cos((k-1)*pi/(n-1)); % Chebyshev data points on range [0,2]
+      end
 
-%    yplot = chebyshev_pchip(n, x);
+      yplot = chebyshev_pchip(n, x);
 
-%    do_plotting_all(i , n , yplot, x);
+      do_plotting_all(i , n , yplot, x);
 
-%    i = i + 1;
-% end
+      i = i + 1;
+   end
+end
 
-x = linspace(0,2,6)';
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-yplot = evenly_spline(6, 6, x);
+doAllVandermonde()
+doAllBarycentric()
+doAllSpline()
+doAllPchip()

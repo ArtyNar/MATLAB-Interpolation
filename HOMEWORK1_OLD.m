@@ -289,7 +289,7 @@ function [] = doAllVandermonde()
          x(k) = 1 - cos((k-1)*pi/(n-1)); % Chebyshev data points on range [0,2]
       end
 
-      yplot = chebyshev_spaced_vander(n, x);
+      yplot = evenly_spaced_vander(n, x);
 
       do_plotting_all(i , n , yplot, x);
 
@@ -326,7 +326,7 @@ function [] = doAllBarycentric()
          x(k) = 1 - cos((k-1)*pi/(n-1)); % Chebyshev data points on range [0,2]
       end
 
-      yplot = chebyshev_spaced_bary(n, x);
+      yplot = evenly_spaced_bary(n, x);
 
       do_plotting_all(i , n , yplot, x);
 
@@ -361,7 +361,7 @@ function [] = doAllSpline()
       for k = 1:n
          x(k) = 1 - cos((k-1)*pi/(n-1)); % Chebyshev data points on range [0,2]
       end
-      yplot = chebyshev_spline(n, 6, x);
+      yplot = evenly_spline(n, 6, x);
 
       do_plotting_all(i , n , yplot, x);
 
@@ -398,7 +398,7 @@ function [] = doAllPchip()
          x(k) = 1 - cos((k-1)*pi/(n-1)); % Chebyshev data points on range [0,2]
       end
 
-      yplot = chebyshev_pchip(n, x);
+      yplot = evenly_pchip(n, x);
 
       do_plotting_all(i , n , yplot, x);
 
@@ -409,6 +409,6 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 doAllVandermonde()
-doAllBarycentric()
-doAllSpline()
-doAllPchip()
+% doAllBarycentric()
+% doAllSpline()
+% doAllPchip()
